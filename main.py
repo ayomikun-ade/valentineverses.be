@@ -70,6 +70,7 @@ async def generate_pem(request: PoemRequest):
     Consider these requests: {request.requests}.
     The poem should evoke strong emotions and imagery.
     Keep the length between 150 words.
+    Respond with only the contents of the poem.
     Separate each line using newline characters.
     """
     try:
