@@ -39,9 +39,11 @@ def index_route():
 async def generate_love_letter(request: LoveLetterRequest):
     try:
         prompt = f"""
-    Write a heartfelt love letter from {request.sender_name} to {request.receiver_name}.
+    Write a heartfelt and love letter from {request.sender_name} to {request.receiver_name}.
     Incorporate the following additional information: {request.additional_info}.
-    The letter should express deep affection and appreciation.
+    Make the letter personal, unique, natural-sounding and avoid generic phrases.
+    The letter should be sincere and express deep affection and appreciation.
+    Keep the length between 150 and 200 words.
     Separate each line using newline characters.
         """
         chat_completion= groq_client.chat.completions.create(
