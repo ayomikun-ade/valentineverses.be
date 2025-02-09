@@ -27,7 +27,7 @@ class LoveLetterRequest(BaseModel):
     additional_info: Optional[str] = None
 
 class PoemRequest(BaseModel):
-    requests: Optional[str]
+    requests: Optional[str] = None 
 
 
 @app.get("/")
@@ -63,4 +63,26 @@ async def generate_love_letter(request: LoveLetterRequest):
         raise HTTPException(status_code=500, detail=str(e))
         return {"error": str(e)}
         
-
+@app.post("/generate-poem")
+async def generate_pem(request: PoemRequest):
+    prompt = f"""
+    Write a beautiful and romantic poem.
+    Consider these requests: {request.requests}.
+    The poem should evoke strong emotions and imagery.
+    Keep the length between 150 words.
+    Separate each line using newline characters.
+    """
+    try:
+        chat_completion = groq_client.chat.completions.create(
+            model="llama3-8b-8192",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=300,
+            temperature=1,
+        )
+        
+        poem = chat_completion.choices[0].message.content.splitlines()
+        return {"poem": poem}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+        # return {"error": str(e)}
