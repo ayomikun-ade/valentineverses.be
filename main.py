@@ -29,6 +29,12 @@ class LoveLetterRequest(BaseModel):
 class PoemRequest(BaseModel):
     requests: Optional[str]
 
+
+@app.get("/")
+def index_route():
+    return {"hello":"world"}
+
+
 @app.post("/generate-love-letter")
 async def generate_love_letter(request: LoveLetterRequest):
     try:
