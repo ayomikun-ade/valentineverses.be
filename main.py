@@ -39,7 +39,7 @@ def index_route():
 async def generate_love_letter(request: LoveLetterRequest):
     try:
         prompt = f"""
-    Write a heartfelt and love letter from {request.sender_name} to {request.receiver_name}.
+    Write a heartfelt love letter from {request.sender_name} to {request.receiver_name}.
     Incorporate the following additional information: {request.additional_info}.
     Make the letter personal, unique, natural-sounding and avoid generic phrases.
     The letter should be sincere and express deep affection and appreciation.
