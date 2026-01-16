@@ -20,6 +20,7 @@ app.add_middleware(CORSMiddleware,
     )
 
 groq_client = Groq(api_key=GROQ_API_KEY)
+model = "llama-3.3-70b-versatile"
 
 class LoveLetterRequest(BaseModel):
     sender_name: str
@@ -39,43 +40,44 @@ def index_route():
 async def generate_love_letter(request: LoveLetterRequest):
     try:
         prompt = f"""
-    Write a heartfelt love letter from {request.sender_name} to {request.receiver_name}.
-    Incorporate the following additional information: {request.additional_info}.
-    Make the letter personal, unique, natural-sounding and avoid generic phrases.
-    The letter should be sincere and express deep affection and appreciation.
-    Keep the length between 150 and 200 words.
-    Separate each line using newline characters.
+    Write a heartfelt, personalized love letter from {request.sender_name} to {request.receiver_name}.
+    Incorporate the following additional information naturally and creatively: {request.additional_info}.
+    Make the letter completely unique, natural-sounding, and avoid generic phrases or clichés like "I love you more than words can say" or "You are my everything."
+    Express deep affection, appreciation, and specific memories, qualities, or shared experiences that make the relationship special.
+    Structure the letter with a warm, personalized greeting, 2-3 paragraphs of heartfelt content, and a sincere, unique closing.
+    Keep the total length between 150-200 words.
+    Use vivid, emotional language, varied sentence structures, and creative metaphors to make it engaging and memorable.
+    Separate each line using newline characters for proper formatting.
         """
         chat_completion= groq_client.chat.completions.create(
-            model="llama3-8b-8192",
+            model=model,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=500,
             temperature=1,
         )
         
         love_letter = chat_completion.choices[0].message.content
-        prefix = f"Here is a heartfelt love letter from {request.sender_name} to {request.receiver_name}:\n\n"
-        love_letter = love_letter.removeprefix(prefix)
-        love_letter = love_letter.splitlines()
         
         return {"love_letter" : love_letter}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        return {"error": str(e)}
+        # return {"error": str(e)}
         
 @app.post("/generate-poem")
 async def generate_pem(request: PoemRequest):
     prompt = f"""
-    Write a beautiful and romantic poem.
-    Consider these requests: {request.requests}.
-    The poem should evoke strong emotions and imagery.
-    Keep the length between 150 words.
-    Respond with only the contents of the poem.
-    Separate each line using newline characters.
+    Write a beautiful, romantic poem inspired by love and passion.
+    Consider these specific requests: {request.requests}.
+    The poem should evoke strong emotions, vivid imagery, and a sense of deep connection.
+    Choose a style that fits the requests—such as free verse, rhyming couplets, or sonnet form—but keep it accessible and heartfelt.
+    Focus on themes like eternal love, shared moments, or the beauty of the beloved.
+    Keep the poem concise: aim for 12-20 lines or 80-150 words total.
+    Respond with only the contents of the poem, no titles or explanations.
+    Separate each line using newline characters for proper poetic formatting.
     """
     try:
         chat_completion = groq_client.chat.completions.create(
-            model="llama3-8b-8192",
+            model=model,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300,
             temperature=1,
